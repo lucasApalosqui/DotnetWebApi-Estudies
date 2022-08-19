@@ -40,6 +40,11 @@ public class Program
             return code;
         });
 
+        //endpoint que recebe dados via header da aplicação
+        app.MapGet("/getProducts", (HttpRequest request) => {
+            return request.Headers["product-id"].ToString();
+        });
+
 
 
         
