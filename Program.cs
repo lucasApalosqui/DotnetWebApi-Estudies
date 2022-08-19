@@ -1,5 +1,7 @@
 namespace api6;
 using System.Globalization;
+using Microsoft.AspNetCore.Mvc;
+
 public class Program
 {
     static void Main(string[] args)
@@ -25,6 +27,20 @@ public class Program
         app.MapPost("/Product", (Product product) =>{
             return "name: " + product.Name + " - " + product.Price.ToString("F2", CultureInfo.InvariantCulture) + " - " + product.Status;
         });
+
+        //endpoint que recebe dados via query
+        //api.com.br/users?datastart={date}&dataend={date}
+        app.MapGet("/getProduct", ([FromQuery]string dateStart, [FromQuery]string dateEnd) =>{
+            return dateStart + " - " + dateEnd;
+        });
+
+        //endpoint que recebe dados via code route
+        //api.com.br/users/{code}
+        app.MapGet("/getProduct/{code}", ([FromRoute]string code) =>{
+            return code;
+        });
+
+
 
         
 
