@@ -10,52 +10,27 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         var app = builder.Build();
 
-        //endpoint simples para pegar informações
-        app.MapGet("/", () => "Hello World!");
-
-        //endpoint de postagem com informação json via lambda
-        app.MapPost("/user", () => new { name = "Juanito nieves de la vaganza", Age = 67, Hobbie = "Exportar hipopotamos" });
-
-        //endpoint com alteração de headers e get de informações imbutido
-        app.MapGet("/user", (HttpResponse response) =>
-        {
-            response.Headers.Add("Teste", "Paozinho");
-            return new { name = "Juanito nieves de la vaganza", Age = 67, Hobbie = "Exportar hipopotamos" };
-        });
-
         //endpoint que adiciona um novo produto via json atráves do body
-        app.MapPost("/Product", (Product product) =>{
+        app.MapPost("/products", (Product product) =>{
            ProductRepository.addProduct(product);
-        });
-        
-
-        //endpoint que recebe dados via query
-        //api.com.br/users?datastart={date}&dataend={date}
-        app.MapGet("/getProduct", ([FromQuery]string dateStart, [FromQuery]string dateEnd) =>{
-            return dateStart + " - " + dateEnd;
         });
 
         //endpoint que recebe dados via code route
         //api.com.br/users/{code}
-        app.MapGet("/getProduct/{code}", ([FromRoute]string code) =>{
-            var product = ProductRepository.GetBy(code);
+        app.MapGet("/products/{name}", ([FromRoute]string name) =>{
+            var product = ProductRepository.GetBy(name);
             return product;
         });
 
-        //endpoint que recebe dados via header da aplicação
-        app.MapGet("/getProducts", (HttpRequest request) => {
-            return request.Headers["product-id"].ToString();
-        });
-
         //endpoint que altera um produto
-         app.MapPut("/ProductUpdate", (Product product) =>{
+         app.MapPut("/products", (Product product) =>{
            var productSave = ProductRepository.GetBy(product.Name);
            productSave.Price = product.Price;
            productSave.Status = product.Status;
         });
 
         //endpoint que deleta um produto pelo seu nome
-        app.MapDelete("/ProductDelete/{name}", ([FromRoute]string name) =>{
+        app.MapDelete("/products/{name}", ([FromRoute]string name) =>{
           var productDelete = ProductRepository.GetBy(name);
           ProductRepository.Remove(productDelete);
         });
